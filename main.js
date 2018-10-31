@@ -1,7 +1,8 @@
 let polygonOsc, currentCanvasPath;
 let canvasSampleRate = 256, animationIntervalId;
 let animationPhase = 0;
-let keyboardEl = gE("keyboard"), keyboardContext, keys = 15;
+let scale = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24].map(e=>440 * 2 ** (e / 12));
+let keyboardEl = gE("keyboard"), keyboardContext, keys = scale.length;
 let inputs = [gE("vertices"), gE("interval"), gE("rotation"), gE("rounding")];
 
 class PolygonOsc {
@@ -82,17 +83,14 @@ function changeOsc() {
 function setupCanvas(polygonOsc, rounding) {
     let sampleRate = canvasSampleRate;
     let path = currentCanvasPath = polygonOsc.get(1, 1, rounding, sampleRate).coordinate;
-    drawPolygonCanvas(path, sampleRate);
-
-    animationPhase = 0;
-    if (animationIntervalId) clearInterval(animationIntervalId);
-    animationIntervalId = setInterval(animate, 1000 / 30);
+    startAnimation();
 }
+
 function drawPolygonCanvas(path, sampleRate, animationPhase = 0) {
     background("orange");
     let radius = height / 3;
     let cX = width * 1 / 6, cY = height / 2;
-    circle(cX, cY, radius, null, "#fff4");
+    circle(cX, cY, radius, null, "#fff8");
     for (let i = 0, x, y; i < sampleRate; i++) {
         x = cX + path[i][0] * radius;
         y = cY - path[i][1] * radius;
@@ -106,6 +104,12 @@ function drawPolygonCanvas(path, sampleRate, animationPhase = 0) {
         circle(waveformX + i / sampleRate * waveformWidth, y, 1)
         if (i == animationPhase) circle(waveformX + i / sampleRate * waveformWidth, y, 3)
     }
+}
+
+function startAnimation(){
+    animationPhase = 0;
+    if (animationIntervalId) clearInterval(animationIntervalId);
+    animationIntervalId = setInterval(animate, 1000 / 30);
 }
 
 function animate() {
@@ -123,7 +127,7 @@ function setupKeyboard() {
     let width = keyboardEl.offsetWidth, height = keyboardEl.offsetHeight;
     for (let i = 0; i <= keys; i++) {
         let x = width / keys * i;
-        x = Math.floor(x)
+        x = Math.round(x)
         line(x, 0, x, height, "grey", ctx);
         if (i % 7 != 0) continue;
         x += width / 30;
@@ -138,8 +142,11 @@ function setupKeyboard() {
 
 
 function start(){
-    for (let i of inputs) i.addEventListener("change", changeOsc);
     setupKeyboard();
     changeOsc();
+    for (let i of inputs) i.addEventListener("change", changeOsc);
+    canvasEl.addEventListener("click",startAnimation);
+    document.addEventListener("keydown",keydownHandler);
 }
+
 window.addEventListener("load",start);
