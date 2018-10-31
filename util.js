@@ -19,6 +19,7 @@ const PI2 = Math.PI*2
 const PHI = 1.618033988749895;//(Math.sqrt(5)+1)/2
 
 // canvas
+const canvasEl = document.getElementById("canvas");
 const ctx = canvasEl.getContext("2d");
 let width = canvasEl.offsetWidth, height = canvasEl.offsetHeight;
 let mouseX = 0, mouseY = 0, mousePressed = false;
@@ -27,8 +28,8 @@ function getMousePos(e){
     e.preventDefault();
     let rect = e.target.getBoundingClientRect();
     return [mouseX, mouseY] = [
-        Math.floor( ( e.x - rect.left ) /transformScale ),
-        Math.floor( ( e.y - rect.top  ) /transformScale )
+        Math.floor( ( e.x - rect.left )  ),
+        Math.floor( ( e.y - rect.top  )  )
     ];
 }
 

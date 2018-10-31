@@ -52,7 +52,6 @@ class PolygonOsc{
     }
 }
 
-let gifConverter = new GifConverter();
 let polygonOsc, currentCanvasPath;
 function createVertexList(){
     let vertexList = [];
