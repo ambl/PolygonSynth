@@ -6,24 +6,30 @@
     <style>
         body{
             background:#eee;
-            margin:0;
             font-family:monospace;
+        }
+        canvas{
+            user-select: none;
+            display:block;
+        }
+        #keyboard{
+            background:white;
+            margin-top:1em;
         }
     </style>
 </head>
 
 <body>
-    <div style="margin:0;padding:0">
-        <canvas id="canvas" width="320" height="100" style="float:left;background:black;user-select: none;display:block"></canvas>
-
-        <div style="float:left">
+    <div>
+        <canvas id="canvas" width="320" height="100" style="float:left;"></canvas>
+        <div style="float:left;margin-left:1em;">
             vertices:<input type="number" id="vertices" value=5><br>
             interval:<input type="number" id="interval" value=2><br>
             rounding:<input type="number" id="rounding" value=0.5 step=0.1><br>
             rotation:<input type="number" id="rotation" value=90><br>
         </div>
         <br style="clear:both">
-        <canvas id="keyboard" width="640" height="100" style="background:white"></canvas>
+        <canvas id="keyboard" width="640" height="100"></canvas>
         <script src="util.js" charset="UTF-8"></script>
         <script src="audio.js" charset="UTF-8"></script>
         <script src="main.js" charset="UTF-8"></script>
