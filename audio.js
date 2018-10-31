@@ -14,6 +14,10 @@ compressor.connect(audioCtx.destination);
 function setupSound(polygonOsc, rounding) {
     noteOff();
     let wave = polygonOsc.get(440, 1, rounding, sampleRate).wave;
+    let max = Math.max.apply(null, wave);
+    if(max>1){
+        for(let i=0,l=wave.length;i<l;i++)wave[i] /= max;
+    }
     oscBuffer = createBuffer(wave, sampleRate);
     noteOn();
 }

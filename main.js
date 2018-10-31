@@ -48,13 +48,6 @@ class PolygonOsc {
         }
         return { coordinate: output, wave: outputWave };
     }
-
-    round(x, y, rounding) {
-        let d = (x ** 2 + y ** 2) ** (1 / 2);
-        d = 2 - d;
-        d **= rounding;
-        return [x * d, y * d];
-    }
 }
 
 function createVertexList() {
