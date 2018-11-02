@@ -1,7 +1,7 @@
 let polygonOsc, currentCanvasPath;
 let canvasSampleRate = 256, animationIntervalId;
 let animationPhase = 0;
-let scale = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24].map(e=>440 * 2 ** (e / 12));
+let scale = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24].map(e=>220 * 2 ** (e / 12));
 let keyboardEl = gE("keyboard"), keyboardContext, keys = scale.length;
 let inputs = [gE("vertices"), gE("interval"), gE("rotation"), gE("rounding")];
 
@@ -39,8 +39,8 @@ class PolygonOsc {
             }
 
             let d = (x ** 2 + y ** 2) ** (1 / 2);// 中心からの距離
-            d = 2 - d;// 一番遠い距離は1で内に行くほど高い数値が出る
-            d **= rounding;// e=0なら1, そのままの星
+            d = 2 - d;// 一番遠い距離は1で中心に近いほど高い数値が出る
+            d **= rounding;// 係数0なら1, 無効
             x *= d;
             y *= d;
             output.push([x, y]);
@@ -120,7 +120,7 @@ function setupKeyboard() {
     let width = keyboardEl.offsetWidth, height = keyboardEl.offsetHeight;
     for (let i = 0; i <= keys; i++) {
         let x = width / keys * i;
-        x = Math.round(x)
+        x = Math.round(x);
         line(x, 0, x, height, "grey", ctx);
         if (i % 7 != 0) continue;
         x += width / 30;
@@ -135,11 +135,12 @@ function setupKeyboard() {
 
 
 function start(){
+    setupWebAudio();
     setupKeyboard();
-    changeOsc();
     for (let i of inputs) i.addEventListener("change", changeOsc);
     canvasEl.addEventListener("click",startAnimation);
     document.addEventListener("keydown",keydownHandler);
+    changeOsc();
 }
 
 window.addEventListener("load",start);

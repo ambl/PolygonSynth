@@ -19,8 +19,8 @@ function getMousePos(e) {
     e.preventDefault();
     let rect = e.target.getBoundingClientRect();
     return [mouseX, mouseY] = [
-        Math.floor((e.x - rect.left)),
-        Math.floor((e.y - rect.top))
+        Math.floor(e.x - rect.left),
+        Math.floor(e.y - rect.top )
     ];
 }
 
