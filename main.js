@@ -3,7 +3,7 @@ let canvasSampleRate = 256, animationIntervalId;
 let animationPhase = 0;
 let scale = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24].map(e=>220 * 2 ** (e / 12));
 let keyboardEl = gE("keyboard"), keyboardContext, keys = scale.length;
-let inputs = [gE("vertices"), gE("interval"), gE("rotation"), gE("rounding")];
+let inputs = document.querySelectorAll("input");
 
 class PolygonOsc {
     constructor(vertexList) {
@@ -55,6 +55,8 @@ function createVertexList() {
     let vertices = getValue("vertices");
     let interval = getValue("interval");
     let rotation = getValue("rotation");
+    // let crossing = gE("crossing").checked;
+
     rotation = rotation / 360 * PI2;// degree to radian
     for (let i = 0; i < vertices; i++) {
         vertexList.push([
@@ -129,8 +131,9 @@ function setupKeyboard() {
     line(0, 0, width, 0, "grey", ctx);
     line(0, height, width, height, "grey", ctx);
 
-    keyboardEl.addEventListener("click", keyboardHandler);
-    keyboardEl.addEventListener("mousemove", getMousePos, false);
+    keyboardEl.addEventListener("mousemove", mousemoveHandler, false);
+    keyboardEl.addEventListener("mousedown", mouseHandler, false);
+    keyboardEl.addEventListener("mouseup", mouseupHandler, false);
 }
 
 

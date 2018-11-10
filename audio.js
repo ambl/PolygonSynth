@@ -2,6 +2,7 @@ let audioCtx = new AudioContext();
 let sampleRate = audioCtx.sampleRate;
 let oscBuffer, currentBuffer, currentGainNode;
 let compressor = audioCtx.createDynamicsCompressor();
+let pressedKey = null;
 
 function setupWebAudio(){
     compressor.threshold.value = -6;
@@ -30,13 +31,33 @@ function createBuffer(arr, sampleRate) {
     for (let i = 0; i < length; i++)channelDataL[i] = arr[i];
     return buffer;
 }
-
-function keyboardHandler() {
+function mousemoveHandler(e) {
+    // e.preventDefault();
+    let rect = e.target.getBoundingClientRect();
+    [mouseX, mouseY] = [
+        Math.floor(e.x - rect.left),
+        Math.floor(e.y - rect.top )
+    ];
+    if(mousePressed)mouseHandler("move");
+}
+function mouseHandler(e){
+    mousePressed = true;
     let n = Math.floor(mouseX / keyboardEl.offsetWidth * keys);
+
+    if(e==="move"){
+        if(pressedKey==n)return;
+    }
+    
     let hz = scale[n];
     noteOff();
-    noteOn(hz / 440);
+    noteOn(hz);
+    pressedKey = n;
 }
+function mouseupHandler(){
+    mousePressed = false;
+    pressedKey = null;
+}
+
 
 function keydownHandler(e){
     let n = "zxcvbnmasdfghjk".indexOf(e.key);
@@ -44,10 +65,11 @@ function keydownHandler(e){
 
     let hz = scale[n];
     noteOff();
-    noteOn(hz / 440);
+    noteOn(hz);
 }
 
-function noteOn(speed = 1) {
+function noteOn(hz = 440) {
+    let speed = hz / 440;
     let buffer = currentBuffer = audioCtx.createBufferSource();
     buffer.buffer = oscBuffer;
     buffer.playbackRate.value = speed;

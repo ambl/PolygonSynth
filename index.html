@@ -16,6 +16,11 @@
             background:white;
             margin-top:1em;
         }
+        label input{
+            top:3px;
+            position:relative;
+            vertical-align: bottom;
+        }
     </style>
 </head>
 
@@ -26,6 +31,8 @@
         interval:<input type="number" id="interval" value=2><br>
         rounding:<input type="number" id="rounding" value=0.5 step=0.1><br>
         rotation:<input type="number" id="rotation" value=90><br>
+        <!-- <label><input type="checkbox" id="crossing" checked>crossing</label> -->
+
     </div>
     <br style="clear:both">
     <canvas id="keyboard" width="640" height="100"></canvas>

@@ -2,8 +2,8 @@
 
 //js
 const gE = id => { return document.getElementById(id) };
+const getValue = id =>{return Number(document.getElementById(id).value);}
 const log = (...e) => console.log(...e);
-const getValue = id =>{return document.getElementById(id).value;}
 
 // Math
 const PI = Math.PI;
@@ -15,14 +15,6 @@ const ctx = canvasEl.getContext("2d");
 let width = canvasEl.offsetWidth, height = canvasEl.offsetHeight;
 let mouseX = 0, mouseY = 0, mousePressed = false;
 
-function getMousePos(e) {
-    e.preventDefault();
-    let rect = e.target.getBoundingClientRect();
-    return [mouseX, mouseY] = [
-        Math.floor(e.x - rect.left),
-        Math.floor(e.y - rect.top )
-    ];
-}
 
 // canvas function
 function background(col, context) {
