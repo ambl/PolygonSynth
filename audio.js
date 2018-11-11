@@ -4,7 +4,7 @@ let oscBuffer, currentBuffer, currentGainNode;
 let compressor = audioCtx.createDynamicsCompressor();
 let pressedKey = null;
 
-function setupWebAudio(){
+function setupWebAudio() {
     compressor.threshold.value = -6;
     compressor.knee.value = 40;
     compressor.ratio.value = 20;
@@ -17,8 +17,8 @@ function setupSound(polygonOsc, rounding) {
     noteOff();
     let wave = polygonOsc.get(440, 1, rounding, sampleRate).wave;
     let max = Math.max.apply(null, wave);
-    if(max>1){
-        for(let i=0,l=wave.length;i<l;i++)wave[i] /= max;
+    if (max > 1) {
+        for (let i = 0, l = wave.length; i < l; i++)wave[i] /= max;
     }
     oscBuffer = createBuffer(wave, sampleRate);
     noteOn();
@@ -36,32 +36,32 @@ function mousemoveHandler(e) {
     let rect = e.target.getBoundingClientRect();
     [mouseX, mouseY] = [
         Math.floor(e.x - rect.left),
-        Math.floor(e.y - rect.top )
+        Math.floor(e.y - rect.top)
     ];
-    if(mousePressed)mouseHandler("move");
+    if (mousePressed) mouseHandler("move");
 }
-function mouseHandler(e){
+function mouseHandler(e) {
     mousePressed = true;
     let n = Math.floor(mouseX / keyboardEl.offsetWidth * keys);
 
-    if(e==="move"){
-        if(pressedKey==n)return;
+    if (e === "move") {
+        if (pressedKey == n) return;
     }
-    
+
     let hz = scale[n];
     noteOff();
     noteOn(hz);
     pressedKey = n;
 }
-function mouseupHandler(){
+function mouseupHandler() {
     mousePressed = false;
     pressedKey = null;
 }
 
 
-function keydownHandler(e){
+function keydownHandler(e) {
     let n = "zxcvbnmasdfghjk".indexOf(e.key);
-    if(n==-1)return;
+    if (n == -1) return;
 
     let hz = scale[n];
     noteOff();
@@ -78,7 +78,7 @@ function noteOn(hz = 440) {
     let gainNode = currentGainNode = audioCtx.createGain();
     gainNode.gain.value = 0;
     gainNode.gain.setTargetAtTime(0.5, audioCtx.currentTime + 0.05, 1 / 10);
-    gainNode.gain.setTargetAtTime(0.3, audioCtx.currentTime  + 0.2, 1 / 10);
+    gainNode.gain.setTargetAtTime(0.3, audioCtx.currentTime + 0.2, 1 / 10);
     gainNode.gain.setTargetAtTime(0, audioCtx.currentTime + 2, 1 / 4);
     buffer.connect(gainNode);
     gainNode.connect(compressor);

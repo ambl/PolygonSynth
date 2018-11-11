@@ -48,3 +48,12 @@ function circle(x = 0, y = 0, radius = 50, fillCol = "white", strokeCol, context
     }
     c.closePath();
 }
+
+window.onerror = function(msg, url, line, col, error) {  
+    background("#fff8");
+    ctx.textAlign= "left";
+    ctx.textBaseline = "top";
+    ctx.fillStyle="red";
+    ctx.fillText(msg,0,0);
+    clearInterval(animationIntervalId);
+};
