@@ -6,48 +6,35 @@ let scale = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19, 21, 23, 24].map(e => 220 
 let keyboardEl = gE("keyboard"), keyboardContext, keys = scale.length;
 let inputs = document.querySelectorAll("input");
 
+
 class PolygonOsc {
     constructor(vertexList) {
         this.vertexList = vertexList;
         let vertices = this.vertices = vertexList.length;
         this.phasePerLine = 1 / vertices;
-
-        for (let i = 0; i < vertices; i++) {
-            let p1 = vertexList[i];
-            let p2 = vertexList[(i + 1) % vertices];
-            let slope = (p2[1] - p1[1]) / (p2[0] - p1[0]);
-            let yIntercept = p1[1] - slope * p1[0];
-            let interval = p2[0] - p1[0];//interval は頂点間xの距離
-            if (slope > 10000 || slope < -10000) {
-                slope = Infinity;
-                interval = p2[1] - p1[1];//傾きなしならyの距離
-            }
-            vertexList[i].push(slope, yIntercept, interval);
-        }
     }
     get(hz = 440, sec = 1, rounding = 0, sampleRate = 48000) {
         let output = [], outputWave = [];
-        for (let i = 0, phase, phaseInLine, n, v, x, y, l = sec * sampleRate; i < l; i++) {
+        for (let i = 0, phase, phaseInLine, n, v1, v2, x, y, l = sec * sampleRate; i < l; i++) {
             phase = i / sampleRate * hz % 1;
             n = Math.floor(phase * this.vertices);
-            v = this.vertexList[n];
             phaseInLine = (phase - n * this.phasePerLine) / this.phasePerLine;
-            x = v[0] + phaseInLine * v[4];
-            y = v[2] * x + v[3];
-            if (!isFinite(v[2])) {
-                x = v[0];
-                y = v[1] + phaseInLine * v[4];
-            }
+
+            v1 = this.vertexList[n];
+            v2 = this.vertexList[(n+1)%this.vertices];
+            x = v1[0] *(1-phaseInLine) + v2[0]*phaseInLine;
+            y = v1[1] *(1-phaseInLine) + v2[1]*phaseInLine;
 
             let d = (x ** 2 + y ** 2) ** (1 / 2);// 中心からの距離, 一番遠い距離は1
             d = 2 - d;// 中心に近いほど高い数値が出る
-            d = Math.abs(d);
+            d = Math.abs(d); //TODO:削除
             d **= rounding;// 係数0なら1, 無効
             x *= d;
             y *= d;
             output.push([x, y]);
             outputWave.push(y);
         }
+        
         return { coordinate: output, wave: outputWave };
     }
 }
@@ -150,10 +137,11 @@ function changeOsc() {
 function setupCanvas(polygonOsc, rounding) {
     let sampleRate = canvasSampleRate;
     currentCanvasPath = polygonOsc.get(1, 1, rounding, sampleRate).coordinate;
-    normalizerValue = normalizer(currentCanvasPath);
+    normalizerValue = normalizer2D(currentCanvasPath);
     startAnimation();
 }
-function normalizer(x, value = 1) {
+
+function normalizer2D(x, value = 1) {
     let max = 0, len = x.length;
     for (let i = 0, n; i < len; i++) {
         n = (x[i][0] ** 2 + x[i][1] ** 2) ** (1 / 2);
